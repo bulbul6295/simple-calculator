@@ -1,0 +1,84 @@
+.model small
+.stack 100h
+.data
+    msg1 db 10,13,'Birinci sayi: $'
+    msg2 db 10,13,'Ikinci sayi: $'
+    msg3 db 10,13,'Islem (+,-,*,/): $'
+    msg4 db 10,13,'Sonuc: $'
+    sayi1 db ?
+    sayi2 db ?
+
+.code
+main proc
+    mov ax, @data
+    mov ds, ax
+
+    mov ah, 09h
+    lea dx, msg1
+    int 21h
+    mov ah, 01h
+    int 21h
+    sub al, 30h
+    mov sayi1, al
+
+    mov ah, 09h
+    lea dx, msg2
+    int 21h
+    mov ah, 01h
+    int 21h
+    sub al, 30h
+    mov sayi2, al
+
+    mov ah, 09h
+    lea dx, msg3
+    int 21h
+    mov ah, 01h
+    int 21h
+    mov bl, al
+
+    mov ah, 09h
+    lea dx, msg4
+    int 21h
+
+    cmp bl, '+'
+    je toplama
+    cmp bl, '-'
+    je cikarma
+    cmp bl, '*'
+    je carpma
+    cmp bl, '/'
+    je bolme
+    jmp cikis
+
+toplama:
+    mov al, sayi1
+    add al, sayi2
+    jmp yazdir
+
+cikarma:
+    mov al, sayi1
+    sub al, sayi2
+    jmp yazdir
+
+carpma:
+    mov al, sayi1
+    mul sayi2
+    jmp yazdir
+
+bolme:
+    mov al, sayi1
+    mov ah, 0
+    div sayi2
+    jmp yazdir
+
+yazdir:
+    add al, 30h
+    mov dl, al
+    mov ah, 02h
+    int 21h
+
+cikis:
+    mov ah, 4ch
+    int 21h
+main endp
+end main
